@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %} 
+
+      <script>
+        function autoRefresh_div() {
+            $("#result").load("/Count");
+        }
+        setInterval('autoRefresh_div()', 5000); // refresh div after 5 secs
+      </script>
+      <div class="page-header">
+        {% if running %}
+          <h1>Running <span id="result">{{ count }}</span> of {{ target }}</h1>
+        {% else %}
+          <h1>Not running</h1>
+        {% endif %}
+      </div>
+      <p> 
+        {% if running %}
+          <a href="/Stop" role="button" class="btn btn-lg btn-danger">Stop</a>
+          <a href="/Pause" role="button" class="btn btn-lg btn-warning">Pause</a>
+        {% else %}
+          <a href="/Start" role="button" class="btn btn-lg btn-success">Start</a>
+        {% endif %}
+      </p>
+{% endblock %}

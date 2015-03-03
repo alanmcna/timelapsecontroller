@@ -34,7 +34,7 @@ def running():
     print "An error occurred:", e.args[0]
   return False 
 
-def sleep():
+def getsleep():
   c = conn.cursor()
   try: 
     c.execute('SELECT * FROM timelapseconfig')
@@ -77,7 +77,7 @@ if __name__ == "__main__":
       updatecounter()
 
     #Pause for configured # of seconds (default 2)
-    sleep = sleep()
+    sleep = getsleep()
     print "Sleeping for %r seconds.." % sleep
     time.sleep(sleep)
 

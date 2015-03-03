@@ -12,7 +12,7 @@
   </div>
   <div class="media-body">
     <h4 class="media-heading">Ready to shoot</h4>
-    
+    Designed to run standalone on a pi running raspbian. 
   </div>
 </div>
 <div class="page-header">
@@ -22,22 +22,10 @@
 <li> git clone ...</li>
 <li> sudo ln -s ... /home/timelapsecontroller </li>
 <li> # check perms </li>
-<li> cd /home/timelapsecontroller/bin/ ; python setup.py # do setup </li>
-<li> Run the standalone flask startup file <br/>
-<pre>
-pi@raspberrypi /home/timelapsecontroller $ python index.py 
- * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
- * Restarting with stat
-</pre>
-</li>
-<li> Browse to http://10.0.0.8:5000/</li>
-<li> Kickup the backend job (needs root for access to /dev/mem)
-<pre>
-pi@raspberrypi sudo /home/timelapsecontroller/bin $ python focusandshoot.py 
-Sleeping for 2 seconds..
-Sleeping for 2 seconds..
-</pre>
-</il>
+<li> initiate DB cd /home/timelapsecontroller/db ; python setup.py
+<li> set-up supervisord - check /home/timelapsecontroller/supervisor scripts - to go in /etc/supervisor/conf.d
+<li> Should be close ish to getting it working on restart of supervisor</li>
+<li> Browse to http://&lt;your.lan.ip&gt;:5000/</li>
 </ol>
 <div class="page-header">
   <h1>Related links</h1>

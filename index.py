@@ -20,9 +20,11 @@ def index(page="Home"):
         print "An error occurred:", e.args[0]
         app.logger.error("Home read - an error occurred:", e.args[0])
     running = abs(row['running'])
+    count = math.floor(row['count'])
+    target = math.floor(row['target'])
 
     conn.close()
-    return render_template('index.html', page=page, running=running, count=math.floor(row['count']), target=math.floor(row['target']))
+    return render_template('index.html', page=page, running=running, count=count, target=target)
 
 @app.route('/Start')
 def start(page="Home"):
@@ -38,9 +40,11 @@ def start(page="Home"):
     except sqlite3.Error as e:
         app.logger.error("Start update - an error occurred:", e.args[0])
     running = abs(row['running'])
+    count = math.floor(row['count'])
+    target = math.floor(row['target'])
 
     conn.close()
-    return render_template('index.html', page=page, running=running, count=math.floor(row['count']), target=math.floor(row['target']))
+    return render_template('index.html', page=page, running=running, count=count, target=target)
 
 @app.route('/Stop')
 def stop(page="Home"):
@@ -124,5 +128,5 @@ def about(page="About"):
     return render_template('about.html', page=page)
 
 if __name__ == "__main__":
-    app.debug = True
+    #app.debug = True
     app.run("0.0.0.0")

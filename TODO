@@ -1,4 +1,6 @@
-1. Deamonise focusandshoot
-2. Get everything running on boot
-3. Update Pause processing to be a bit more informative (save state?)
-4. Flesh out about page
+- confirm Get everything running on boot
+-- will flask bind to interfaces as they come and go
+- add an estimated time of completion (sunset/rise and battery life calculations, etc)
+- flesh out about page
+- check bugs
+-- Home (Status) page refreshes count but not overall status

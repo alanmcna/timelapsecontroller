@@ -9,9 +9,11 @@
       </script>
       <div class="page-header">
         {% if running %}
-          <h1>Running <span id="result">{{ count }}</span> of {{ target }}</h1>
+          <h1>Running at <span id="result">{{ count }}</span> of {{ target }}</h1>
+        {% elif count and count >= 1 %}
+          <h1>Paused at <span id="result">{{ count }}</span> of {{ target }}</h1>
         {% else %}
-          <h1>Not running</h1>
+          <h1>Stopped. Not running (counter reset)</h1>
         {% endif %}
       </div>
       <p> 

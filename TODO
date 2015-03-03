@@ -2,5 +2,4 @@
 -- will flask bind to interfaces as they come and go
 - add an estimated time of completion (sunset/rise and battery life calculations, etc)
 - flesh out about page
-- check bugs
--- Home (Status) page refreshes count but not overall status
+- check for bugs / test

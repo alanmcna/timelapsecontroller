@@ -1,4 +1,13 @@
 Timelapse Controller
+
 Control the timelaspe settings for the Raspberry Pi.
+- python
 
 Web-UI + backend focus and shoot script
+- flask +jinja
+- bootstrap +jquery
+
+DB
+- sqlite3 (currently .. might port to mongodb)
+
+Held together with supervisor

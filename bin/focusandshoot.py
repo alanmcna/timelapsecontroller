@@ -2,6 +2,7 @@ import sys
 import sqlite3
 import RPi.GPIO as GPIO
 import time
+import math
 
 conn = sqlite3.connect('/home/timelapsecontroller/db/timelapsecontroller.db')
 conn.row_factory = sqlite3.Row
@@ -26,13 +27,21 @@ def running():
   try: 
     c.execute('SELECT * FROM timelapseconfig')
     row = c.fetchone()
-    sleep = row['sleep']
+    if abs(row['running']) == 1 and math.floor(row['count']) < math.floor(row['target']):
+      print "Running ({} of {})".format(abs(row['count']), abs(row['target']))
+      return True
   except sqlite3.Error as e:
     print "An error occurred:", e.args[0]
-  if abs(row['running']) == 1 and abs(row['count']) < abs(row['target']):
-    print "Running ({} of {})".format(abs(row['count']), abs(row['target']))
-    return True
   return False 
+
+def sleep():
+  c = conn.cursor()
+  try: 
+    c.execute('SELECT * FROM timelapseconfig')
+    row = c.fetchone()
+    return abs(row['sleep'])
+  except sqlite3.Error as e:
+    print "An error occurred:", e.args[0]
 
 def shoot():
 
@@ -68,6 +77,7 @@ if __name__ == "__main__":
       updatecounter()
 
     #Pause for configured # of seconds (default 2)
+    sleep = sleep()
     print "Sleeping for %r seconds.." % sleep
     time.sleep(sleep)
 

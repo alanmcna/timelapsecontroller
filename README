@@ -1,0 +1,20 @@
+Timelapse Controller
+Control the timelaspe settings for the Raspberry Pi.
+
+1. git clone ...
+2. sudo ln -s ... /home/timelapsecontroller
+3. # check perms
+4. cd /home/timelapsecontroller/bin/ ; python setup.py # do setup
+
+5. Run the standalone flask startup file
+pi@raspberrypi /home/timelapsecontroller $ python index.py 
+ * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+
+6. Browse to http://10.0.0.8:5000/
+7. Kickup the backend job (needs root for access to /dev/mem)
+
+pi@raspberrypi sudo /home/timelapsecontroller/bin $ python focusandshoot.py 
+Sleeping for 2 seconds..
+Sleeping for 2 seconds..
+

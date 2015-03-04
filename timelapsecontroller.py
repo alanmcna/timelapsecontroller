@@ -1,6 +1,8 @@
 import sqlite3
 import math
 import os
+from datetime import datetime, timedelta
+
 from flask import Flask, redirect, url_for, request, render_template, g
 
 app = Flask(__name__)
@@ -48,9 +50,12 @@ def index(page="Home"):
         app.logger.error("Home read - an error occurred:", e.args[0])
     running = abs(row['running'])
     count = math.floor(row['count'])
+    sleep = math.floor(row['sleep'])
     target = math.floor(row['target'])
 
-    return render_template('index.html', page=page, running=running, count=count, target=target)
+    d = datetime.now() + timedelta(seconds=(target-count)*sleep)
+
+    return render_template('index.html', page=page, running=running, count=count, target=target, completed=d.strftime("%c"))
 
 @app.route('/Start')
 def start(page="Home"):

@@ -3,8 +3,9 @@ import sqlite3
 import RPi.GPIO as GPIO
 import time
 import math
+import os
 
-conn = sqlite3.connect('/home/timelapsecontroller/db/timelapsecontroller.db')
+conn = sqlite3.connect(os.path.join(app.root_path, 'db/timelapsecontroller.db'))
 conn.row_factory = sqlite3.Row
 
 sleep=2

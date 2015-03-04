@@ -20,12 +20,13 @@
 </div>
 <ol>
 <li> git clone ...</li>
-<li> sudo ln -s ... /home/timelapsecontroller </li>
-<li> # check perms </li>
-<li> initiate DB cd /home/timelapsecontroller/db ; python setup.py
-<li> set-up supervisord - check /home/timelapsecontroller/supervisor scripts - to go in /etc/supervisor/conf.d
-<li> Should be close ish to getting it working on restart of supervisor</li>
-<li> Browse to http://&lt;your.lan.ip&gt;:5000/</li>
+<li> (optional) sudo ln -s timelapsecontroller /home/timelapsecontroller </li>
+<li> cd timelapsecontroller
+<li> python timelapsecontroller.py
+<li> Browse to http://127.0.0.1:5000/ # assumes no other flash instances or processes using port 5000</li>
+<li> (optional) sudo python bin/focusandshoot.py
+<li> ... test ...
+<li> (optional) To fully automate imstall supervisord - and review ./supervisor scripts - to go in /etc/supervisor/conf.d
 </ol>
 <div class="page-header">
   <h1>Related links</h1>

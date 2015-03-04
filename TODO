@@ -1,5 +1,4 @@
-- confirm Get everything running on boot
--- will flask bind to interfaces as they come and go
 - add an estimated time of completion (sunset/rise and battery life calculations, etc)
 - flesh out about page
 - check for bugs / test
+- improve DB handling / passing to templates

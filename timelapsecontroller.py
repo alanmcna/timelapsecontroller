@@ -1,8 +1,6 @@
 import sqlite3
-import math
 import os
 from datetime import datetime, timedelta
-
 from flask import Flask, redirect, url_for, request, render_template, g
 
 app = Flask(__name__)
@@ -11,6 +9,15 @@ app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'db/timelapsecontroller.db'),
     DEBUG=True
 ))
+
+def check_pid(pid):        
+    """ Check For the existence of a unix pid. """
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    else:
+        return True
 
 def init_db():
     with app.app_context():

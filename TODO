@@ -1,4 +1,3 @@
-- add an estimated time of completion (sunset/rise and battery life calculations, etc)
-- flesh out about page
+- check out Flask-SQLAlchemy
+- complete about page
 - check for bugs / test
-- improve DB handling / passing to templates

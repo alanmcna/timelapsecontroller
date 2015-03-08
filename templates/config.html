@@ -16,6 +16,10 @@
           <label for="count">Current count</label>
           <input type="number" class="form-control" id="count" placeholder="Count of photos taken this run" value="{{ config.count }}" disabled>
         </div>
+        <div class="form-group">
+          <label for="pid">PID</label>
+          <input type="number" class="form-control" id="pid" placeholder="Process ID for backend shutter controller" value="{{ config.pid }}" disabled>
+        </div>
         <button type="submit" class="btn btn-lg btn-primary">Save</button>
         <a href="/" role="button" class="btn btn-lg btn-default">Cancel</a>
       </form>

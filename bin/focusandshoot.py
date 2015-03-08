@@ -1,14 +1,23 @@
-import sys
 import sqlite3
 import RPi.GPIO as GPIO
 import time
-import math
 import os
 
 conn = sqlite3.connect(os.path.join(app.root_path, 'db/timelapsecontroller.db'))
 conn.row_factory = sqlite3.Row
 
 sleep=2
+
+def set_pid(pid=None):
+  c = conn.cursor()
+  try: 
+    # Update the DB counter
+    c.execute("UPDATE timelapseconfig set pid=?", pid )
+  except sqlite3.Error as e:
+    print "An error occurred:", e.args[0]
+  # Save (commit) the changes
+  conn.commit()
+  print "Set the PID to be ", pid
 
 def wakeup():
 
@@ -20,16 +29,16 @@ def wakeup():
 
   #Turns on GPIO Pin 7 - Enables Power to Pin 7 for focus / wake up.
   GPIO.output(7, True)
-
   time.sleep(2)
+  GPIO.output(7, False)
 
 def running():
   c = conn.cursor()
   try: 
     c.execute('SELECT * FROM timelapseconfig')
-    row = c.fetchone()
-    if abs(row['running']) == 1 and math.floor(row['count']) < math.floor(row['target']):
-      print "Running ({} of {})".format(abs(row['count']), abs(row['target']))
+    config = c.fetchone()
+    if config['running'] and config['count'] < config['target']:
+      print "Running ({} of {})".format(config['count'], config['target'])
       return True
   except sqlite3.Error as e:
     print "An error occurred:", e.args[0]
@@ -39,8 +48,8 @@ def getsleep():
   c = conn.cursor()
   try: 
     c.execute('SELECT * FROM timelapseconfig')
-    row = c.fetchone()
-    return abs(row['sleep'])
+    config = c.fetchone()
+    return config['sleep']
   except sqlite3.Error as e:
     print "An error occurred:", e.args[0]
 
@@ -59,7 +68,7 @@ def updatecounter():
   c = conn.cursor()
   try: 
     # Update the DB counter
-    c.execute("UPDATE timelapseconfig set count=count+1.0")
+    c.execute("UPDATE timelapseconfig set count=count+1")
   except sqlite3.Error as e:
     print "An error occurred:", e.args[0]
   # Save (commit) the changes
@@ -71,6 +80,9 @@ if __name__ == "__main__":
   #Set the Board Mode
   GPIO.setmode(GPIO.BOARD)
 
+  #Write (set) PID to config
+  set_pid(os.getpid())
+
   while True:
     if ( running() ):
       wakeup()
@@ -81,6 +93,9 @@ if __name__ == "__main__":
     sleep = getsleep()
     print "Sleeping for %r seconds.." % sleep
     time.sleep(sleep)
+
+  #Write (unset) PID to config
+  set_pid(None)
 
   # close the DB conn
   conn.close()

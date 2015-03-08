@@ -8,14 +8,23 @@
         setInterval('autoRefresh_div()', 5000); // refresh div after 5 secs
       </script>
       <div class="page-header">
-        {% if config.running %}
-          <h1>Running at <span id="result">{{ config.count }}</span> of {{ config.target }}</h1>
+        {% if config.running and config.pid %}
+          <h1>Running</h1>
+          <p>Progress: <span id="result">{{ config.count }}</span> of {{ config.target }}</p>
+	  <p>Completed by: {{ completed }}
+        {% elif config.running and config.count >= config.target %}
+          <h1>Finished</h1>
+          <p>Progress: {{ config.count }} photos taken.</p>
+        {% elif config.running %}
+          <h1>Running (with warning)</h1>
+          <p>Configured to run but no back-end process exists.</h1>
+          <p>Progress: <span id="result">{{ config.count }}</span> of {{ config.target }}</p>
         {% elif config.count and config.count >= 1 %}
-          <h1>Paused at <span id="result">{{ config.count }}</span> of {{ config.target }}</h1>
+          <h1>Paused</h1>
+          <p>Progress: <span id="result">{{ config.count }}</span> of {{ config.target }}</p>
         {% else %}
-          <h1>Stopped.</h1>
+          <h1>Stopped</h1>
         {% endif %}
-	<p>Completed by: {{ completed }}
       </div>
       <p> 
         {% if config.running %}

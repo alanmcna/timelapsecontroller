@@ -6,15 +6,15 @@
       <form action="/Configuration" method="POST">
         <div class="form-group">
           <label for="sleep">Sleep (delay between taking photos)</label>
-          <input type="number" class="form-control" name="sleep" id="sleep" placeholder="Enter time in seconds" value="{{ sleep }}">
+          <input type="number" class="form-control" name="sleep" id="sleep" placeholder="Enter time in seconds" value="{{ config.sleep }}">
         </div>
         <div class="form-group">
           <label for="target">Number of photos to take</label>
-          <input type="number" class="form-control" name="target" id="target" placeholder="Number of photos to take" value="{{ target }}">
+          <input type="number" class="form-control" name="target" id="target" placeholder="Number of photos to take" value="{{ config.target }}">
         </div>
         <div class="form-group">
           <label for="count">Current count</label>
-          <input type="number" class="form-control" id="count" placeholder="Count of photos taken this run" value="{{ count }}" disabled>
+          <input type="number" class="form-control" id="count" placeholder="Count of photos taken this run" value="{{ config.count }}" disabled>
         </div>
         <button type="submit" class="btn btn-lg btn-primary">Save</button>
         <a href="/" role="button" class="btn btn-lg btn-default">Cancel</a>

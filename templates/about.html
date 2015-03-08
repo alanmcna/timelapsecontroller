@@ -19,20 +19,34 @@
   <h1>Set-up</h1>
 </div>
 <ol>
-<li> git clone ...</li>
-<li> (optional) sudo ln -s timelapsecontroller /home/timelapsecontroller </li>
-<li> cd timelapsecontroller
-<li> python timelapsecontroller.py
-<li> Browse to http://127.0.0.1:5000/ # assumes no other flash instances or processes using port 5000</li>
-<li> (optional) sudo python bin/focusandshoot.py
-<li> ... test ...
-<li> (optional) To fully automate imstall supervisord - and review ./supervisor scripts - to go in /etc/supervisor/conf.d
+<li> get the code (clone the git repo)
+<pre>
+git clone https://github.com/alanmcna/timelapsecontroller.git
+cd timelapsecontroller
+</pre></li>
+<li> Initialise the DB
+<pre>
+$ python
+>>> from timelapsecontroller import init_db
+>>> init_db()
+</pre></li>
+<li> Run up the app 
+<pre>python timelapsecontroller.py</pre></li>
+<li> Browse to <a href="http://127.0.0.1:5000/">http://127.0.0.1:5000/</a></li>
+<li> (optional) Start up the back-end process (if camera connected)
+<pre>sudo python bin/focusandshoot.py</pre></li>
 </ol>
+<p>To fully automate imstall supervisord - and review ./supervisor scripts - to go in /etc/supervisor/conf.d</p>
 <div class="page-header">
   <h1>Related links</h1>
 </div>
-<p>
-</p>
+<ol>
+<li><a href="http://flask.pocoo.org">flask</a></li>
+<li><a href="http://jinja.pocoo.org">jinja</a></li>
+<li><a href="https://www.sqlite.org">sqlite</a></li>
+<li><a href="http://getbootstrap.com/">bootstrap</a></li>
+<li><a href="https://github.com/alanmcna/timelapsecontroller">source</a></li>
+</ol>
 <div class="page-header">
   <h1>Acknowledgements</h1>
 </div>

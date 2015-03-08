@@ -44,18 +44,14 @@ def index(page="Home"):
 
     try:
         cur.execute('SELECT * FROM timelapseconfig')
-        row = cur.fetchone()
+        config = cur.fetchone()
     except sqlite3.Error as e:
         print "An error occurred:", e.args[0]
         app.logger.error("Home read - an error occurred:", e.args[0])
-    running = abs(row['running'])
-    count = math.floor(row['count'])
-    sleep = math.floor(row['sleep'])
-    target = math.floor(row['target'])
 
-    d = datetime.now() + timedelta(seconds=(target-count)*sleep)
+    d = datetime.now() + timedelta(seconds=(config['target']-config['count'])*config['sleep'])
 
-    return render_template('index.html', page=page, running=running, count=count, target=target, completed=d.strftime("%c"))
+    return render_template('index.html', page=page, config=config, completed=d.strftime("%c"))
 
 @app.route('/Start')
 def start(page="Home"):
@@ -66,14 +62,11 @@ def start(page="Home"):
     db.commit()
     try:
         cur.execute('SELECT * FROM timelapseconfig')
-        row = cur.fetchone()
+        config = cur.fetchone()
     except sqlite3.Error as e:
         app.logger.error("Start update - an error occurred:", e.args[0])
-    running = abs(row['running'])
-    count = math.floor(row['count'])
-    target = math.floor(row['target'])
 
-    return render_template('index.html', page=page, running=running, count=count, target=target)
+    return render_template('index.html', page=page, config=config)
 
 @app.route('/Stop')
 def stop(page="Home"):
@@ -108,12 +101,11 @@ def count():
 
     try:
         cur.execute("select count from timelapseconfig")
-        row = cur.fetchone()
-        count = math.floor(row['count'])
+        config = cur.fetchone()
     except sqlite3.Error as e:
         app.logger.error("Count read - an error occurred:", e.args[0])
 
-    return render_template('count.api', count=count)
+    return render_template('count.api', config=config)
 
 @app.route('/Configuration', methods=['GET', 'POST'])
 def config(page="Configuration"):
@@ -122,17 +114,13 @@ def config(page="Configuration"):
 
     try:
         cur.execute('SELECT * FROM timelapseconfig')
-        row = cur.fetchone()
+        config = cur.fetchone()
     except sqlite3.Error as e:
         app.logger.error("Configuration read - an error occurred:", e.args[0])
-    running = abs(row['running'])
-    count=math.floor(row['count'])
-    target=math.floor(row['target'])
-    sleep=math.floor(row['sleep'])
 
     if request.method == 'POST':
-        sleep = request.form.get('sleep', sleep)
-        target = request.form.get('target', target)
+        sleep = request.form.get('sleep', config['sleep'])
+        target = request.form.get('target', config['target'])
 
         try:
             cur.execute('UPDATE timelapseconfig SET sleep=?, target=?', (sleep, target) )
@@ -141,7 +129,7 @@ def config(page="Configuration"):
         except sqlite3.Error as e:
             app.logger.error("Configuration update - an error occurred:", e.args[0])
 
-    return render_template('config.html', page=page, running=running, count=count, target=target, sleep=sleep)
+    return render_template('config.html', page=page, config=config) 
 
 @app.route('/About')
 def about(page="About"):

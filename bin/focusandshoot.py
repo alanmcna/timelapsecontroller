@@ -1,9 +1,8 @@
 import sqlite3
 import RPi.GPIO as GPIO
-import time
-import os
+import os, sys, time
 
-conn = sqlite3.connect(os.path.join(app.root_path, 'db/timelapsecontroller.db'))
+conn = sqlite3.connect(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), '../db/timelapsecontroller.db'))
 conn.row_factory = sqlite3.Row
 
 sleep=2
@@ -12,7 +11,7 @@ def set_pid(pid=None):
   c = conn.cursor()
   try: 
     # Update the DB counter
-    c.execute("UPDATE timelapseconfig set pid=?", pid )
+    c.execute("UPDATE timelapseconfig SET pid=?", ( int(pid), ) )
   except sqlite3.Error as e:
     print "An error occurred:", e.args[0]
   # Save (commit) the changes

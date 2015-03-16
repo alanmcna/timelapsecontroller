@@ -29,6 +29,7 @@ def init_db():
         print "Commit"
 
 def connect_to_database():
+    print app.config['DATABASE']
     return sqlite3.connect(app.config['DATABASE'], detect_types=sqlite3.PARSE_DECLTYPES)
 
 def get_db():
@@ -44,24 +45,41 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-@app.route('/')
-@app.route('/Home', methods=['GET'])
-def index(page="Home"):
-    cur = get_db().cursor()
+def getConfig():
+    db = get_db()
+    cur = db.cursor()
 
+    config = {}
     try:
         cur.execute('SELECT * FROM timelapseconfig')
         config = cur.fetchone()
     except sqlite3.Error as e:
         print "An error occurred:", e.args[0]
-        app.logger.error("Home read - an error occurred:", e.args[0])
+        app.logger.error("getConfig read - an error occurred:", e.args[0])
+    return config
 
-    d = datetime.now() + timedelta(seconds=(config['target']-config['count'])*config['sleep'])
+def setPause():
+    db = get_db()
+    cur = db.cursor()
 
-    return render_template('index.html', page=page, config=config, completed=d.strftime("%c"))
+    try:
+        cur.execute("UPDATE timelapseconfig SET running=0")
+        db.commit()
+    except sqlite3.Error as e:
+        app.logger.error("Pause update - an error occurred:", e.args[0])
 
-@app.route('/Start')
-def start(page="Home"):
+def setStop():
+    db = get_db()
+    cur = db.cursor()
+
+    try:
+        cur.execute("UPDATE timelapseconfig SET running=0, count=0")
+        db.commit()
+    except sqlite3.Error as e:
+        app.logger.error("Stop update - an error occurred:", e.args[0])
+
+
+def setStart():
     db = get_db()
     cur = db.cursor()
 
@@ -73,70 +91,64 @@ def start(page="Home"):
     except sqlite3.Error as e:
         app.logger.error("Start update - an error occurred:", e.args[0])
 
-    return render_template('index.html', page=page, config=config)
+def updateConfig(r):
+    config = getConfig()
+    sleep = r.form.get('sleep', config['sleep'])
+    target = r.form.get('target', config['target'])
+
+    db = get_db()
+    cur = db.cursor()
+    try:
+        cur.execute('UPDATE timelapseconfig SET sleep=?, target=?', (sleep, target) )
+        db.commit();
+    except sqlite3.Error as e:
+        app.logger.error("Configuration update - an error occurred:", e.args[0])
+
+def completeOn(c):
+    d = datetime.now() + timedelta(seconds=(c['target']-c['count'])*c['sleep'])
+    return d.strftime("%c")
+
+@app.route('/')
+@app.route('/Home', methods=['GET'])
+def index(page="Home"):
+    config = getConfig()
+    if config['count'] >= config['target']:
+        setPause()
+        config = getConfig()
+    return render_template('index.html', page=page, config=config, completed=completeOn(config))
+
+@app.route('/Start')
+def start(page="Home"):
+    setStart()
+    config = getConfig()
+    return render_template('index.html', page=page, config=config, completed=completeOn(config))
 
 @app.route('/Stop')
 def stop(page="Home"):
-    db = get_db()
-    cur = db.cursor()
-
-    try:
-        cur.execute("UPDATE timelapseconfig SET running=0, count=0")
-        db.commit()
-    except sqlite3.Error as e:
-        app.logger.error("Stop update - an error occurred:", e.args[0])
-
-    return render_template('index.html', page=page, running=False)
+    setStop()
+    config = getConfig()
+    return render_template('index.html', page=page, config=config, completed=completeOn(config))
 
 @app.route('/Pause')
 def pause(page="Home"):
-    db = get_db()
-    cur = db.cursor()
-
-    try:
-        cur.execute("UPDATE timelapseconfig SET running=0")
-        db.commit()
-    except sqlite3.Error as e:
-        app.logger.error("Pause update - an error occurred:", e.args[0])
-
-    return render_template('index.html', page=page, running=False)
-
+    setPause()
+    config = getConfig()
+    return render_template('index.html', page=page, config=config, completed=completeOn(config))
 
 @app.route('/Count')
 def count():
-    cur = get_db().cursor()
-
-    try:
-        cur.execute("select count from timelapseconfig")
-        config = cur.fetchone()
-    except sqlite3.Error as e:
-        app.logger.error("Count read - an error occurred:", e.args[0])
-
+    config = getConfig()
     return render_template('count.api', config=config)
 
 @app.route('/Configuration', methods=['GET', 'POST'])
 def config(page="Configuration"):
-    db = get_db()
-    cur = db.cursor()
-
-    try:
-        cur.execute('SELECT * FROM timelapseconfig')
-        config = cur.fetchone()
-    except sqlite3.Error as e:
-        app.logger.error("Configuration read - an error occurred:", e.args[0])
 
     if request.method == 'POST':
-        sleep = request.form.get('sleep', config['sleep'])
-        target = request.form.get('target', config['target'])
+        updateConfig(request)
+        return redirect(url_for('index'))
 
-        try:
-            cur.execute('UPDATE timelapseconfig SET sleep=?, target=?', (sleep, target) )
-            db.commit();
-            return redirect(url_for('index'))
-        except sqlite3.Error as e:
-            app.logger.error("Configuration update - an error occurred:", e.args[0])
-
-    return render_template('config.html', page=page, config=config) 
+    config = getConfig()
+    return render_template('config.html', page=page, config=config, completed=completeOn(config)) 
 
 @app.route('/About')
 def about(page="About"):

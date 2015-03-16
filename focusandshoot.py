@@ -2,10 +2,11 @@ import sqlite3
 import RPi.GPIO as GPIO
 import os, sys, time
 
-conn = sqlite3.connect(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), '../db/timelapsecontroller.db'))
+conn = sqlite3.connect( os.path.join( os.path.dirname(os.path.realpath(sys.argv[0])), 'db/timelapsecontroller.db'))
 conn.row_factory = sqlite3.Row
 
 sleep=2
+
 
 def set_pid(pid=None):
   c = conn.cursor()
